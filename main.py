@@ -6,8 +6,8 @@ import math
 def reverse_string(input_string):
     return input_string[::-1]
 
-wavFilename = '/data/Audio/data1_mono.wav'
-payFilename = '/data/Payload/payload1.txt'
+wavFilename = '/Audio/data1_mono.wav'
+payFilename = '/Payload/payload1.txt'
 ### Embedding -------------------------------------------------------------------------------------------------------------
 ## Step 1 - Read audio and sample to 16-bit and normalize audio sample
 samplerate, audiodata = wavfile.read(wavFilename)
@@ -29,8 +29,7 @@ for i in range(len(interpolasi)):
 
 ## Save Interpolation Audio
 interpolasi = [x - 32768 for x in interpolasi]
-wavfile.write('/results/InterAudio-embed.wav', samplerate, np.array(interpolasi, dtype=np.int16))
-wavfile.write('/data/Audio/InterAudio-embed.wav', samplerate, np.array(interpolasi, dtype=np.int16))
+wavfile.write('/Audio/InterAudio-embed.wav', samplerate, np.array(interpolasi, dtype=np.int16))
 
 ## Step 3 - Find variable C
 duration = len(interpolasi) / samplerate
@@ -82,12 +81,11 @@ print("Length of Key : ", len(truekey))
 ## Step 6 - Denormalize and save Stego Audio sample
 interpolasi = [x - 32768 for x in interpolasi]
 norinterpolasi = [x + 32768 for x in interpolasi]
-wavfile.write('/results/StegoAudio-embed.wav', samplerate, np.array(interpolasi, dtype=np.int16))
-wavfile.write('/data/Audio/StegoAudio-embed.wav', samplerate, np.array(interpolasi, dtype=np.int16))
+wavfile.write('/Audio/StegoAudio-embed.wav', samplerate, np.array(interpolasi, dtype=np.int16))
 
 ## Find PSNR value
-isamplerate, iaudiodata = wavfile.read('/data/Audio/InterAudio-embed.wav')
-fsamplerate, faudiodata = wavfile.read('/data/Audio/StegoAudio-embed.wav')
+isamplerate, iaudiodata = wavfile.read('/Audio/InterAudio-embed.wav')
+fsamplerate, faudiodata = wavfile.read('/Audio/StegoAudio-embed.wav')
 
 # Ensure both signals have the same length
 min_length = min(len(iaudiodata), len(faudiodata))
@@ -136,8 +134,7 @@ for i in range(len(stegoInterpolasi)):
 
 ## Step 3-1 - Save the interpolation sample and find variable C
 stegoInterpolasi = [x - 32768 for x in stegoInterpolasi]
-wavfile.write('/results/InterAudio-extract.wav', samplerate, np.array(stegoInterpolasi, dtype=np.int16))
-wavfile.write('/data/Audio/InterAudio-extract.wav', samplerate, np.array(stegoInterpolasi, dtype=np.int16))
+wavfile.write('/Audio/InterAudio-extract.wav', samplerate, np.array(stegoInterpolasi, dtype=np.int16))
 stegoDuration = len(stegoInterpolasi) / samplerate
 sC = (stegoDuration * 1000)/((len(stegoInterpolasi))*2)
 print("C = ", sC)
@@ -188,16 +185,7 @@ for i in range(len(sPayload)):
 print("How many error = ", err)
 
 # Save Payload
-with open('/data/Payload/RetrievedPayload.txt', 'w') as file:
-    # Write the data to the file
-    file.write(rpayload)
-if sPayload[:len(payload)] == payload:
-    print("Payload retrieved successfully.")
-else:
-    # print("Fail to get the payload.")
-    raise ValueError("Fail to get the payload.")
-
-with open('/results/RetrievedPayload.txt', 'w') as file:
+with open('/Payload/RetrievedPayload.txt', 'w') as file:
     # Write the data to the file
     file.write(rpayload)
 if sPayload[:len(payload)] == payload:
@@ -208,8 +196,7 @@ else:
 
 ## Step 6 - Denormalize and save Original Audio sample
 denormOriSample = [x - 32768 for x in oriSample]
-wavfile.write('/results/OriginalAudio-extract.wav', samplerate, np.array(denormOriSample, dtype=np.int16))
-wavfile.write('/data/Audio/OriginalAudio-extract.wav', samplerate, np.array(denormOriSample, dtype=np.int16))
+wavfile.write('/Audio/OriginalAudio-extract.wav', samplerate, np.array(denormOriSample, dtype=np.int16))
 ocsamplerate, ocaudiodata = wavfile.read('/data/Audio/OriginalAudio-extract.wav')
 if np.array_equal(ocaudiodata, audiodata):
     print("Cover retrieved successfully.")
